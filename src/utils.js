@@ -6,8 +6,25 @@ const camelCase = require("camelcase");
  * @param {string} content
  * @returns {string[]}
  */
-const getCssModuleKeys = (content) => {
+const getCssModuleLocalKeys = (content) => {
   const keyRegex = /"([\w-]+)":/g;
+  let match;
+  const cssModuleKeys = [];
+
+  while ((match = keyRegex.exec(content))) {
+    if (cssModuleKeys.indexOf(match[1]) < 0) {
+      cssModuleKeys.push(match[1]);
+    }
+  }
+  return cssModuleKeys;
+};
+
+/**
+ * @param {string} content
+ * @returns {string[]}
+ */
+const getCssModuleNamedExportsKeys = (content) => {
+  const keyRegex = /export const ([\w-]+) =/g;
   let match;
   const cssModuleKeys = [];
 
@@ -79,7 +96,8 @@ export = ${moduleName};`;
 };
 
 module.exports = {
-  getCssModuleKeys,
+  getCssModuleLocalKeys,
+  getCssModuleNamedExportsKeys,
   filenameToPascalCase,
   filenameToTypingsFilename,
   generateGenericExportInterface,
